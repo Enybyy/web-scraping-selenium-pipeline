@@ -103,7 +103,7 @@ Este proyecto implementa un **pipeline modular de extracción y cotejo de datos 
 
 ## 📬 ¿Necesitas extraer datos o automatizar flujos web en tu empresa?
 
-Desarrollo **robots de extracción de datos (web scraping ético), pipelines de auditoría de información y automatizaciones de navegación para portales sin API pública**.
+Desarrollo **bots de extracción de datos (web scraping ético), pipelines de auditoría de información y automatizaciones de navegación para portales sin API pública**.
 
 - **GitHub**: [@Enybyy](https://github.com/Enybyy)
 - **Perfil Profesional**: Eliud RM — Data Science & Software Solutions
