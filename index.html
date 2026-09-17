@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Scraping & Data Pipeline — Showcase Interactivo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-50 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3 text-sm">
+      <div class="flex items-center gap-2">
+        <span class="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-pulse"></span>
+        <span class="font-semibold text-white">Web Scraping & Data Audit Pipeline</span>
+        <span class="text-xs bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800 font-mono">Selenium + Pandas</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="https://github.com/Enybyy/web-scraping-selenium-pipeline" target="_blank" class="text-slate-300 hover:text-white flex items-center gap-1.5 transition">
+          <i class="fa-brands fa-github"></i> <span>Ver Repositorio</span>
+        </a>
+        <a href="https://www.linkedin.com/in/eliud-rm/" target="_blank" class="bg-sky-600 hover:bg-sky-500 text-white font-medium px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition text-xs">
+          <i class="fa-brands fa-linkedin"></i> <span>Contactar a Eliud RM</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="max-w-7xl mx-auto w-full px-4 pt-8 pb-4 text-center">
+    <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full text-xs font-medium mb-3">
+      <i class="fa-solid fa-spider"></i> Extracción de Datos & Cotejo Automatizado
+    </div>
+    <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-2">
+      Pipeline de Web Scraping y Auditoría con Selenium
+    </h1>
+    <p class="text-slate-400 max-w-2xl mx-auto text-sm md:text-base">
+      Extracción masiva y cotejo automático de registros contra portales web sin API pública, optimizando procesos de auditoría y cumplimiento legal.
+    </p>
+  </section>
+
+  <main class="max-w-7xl mx-auto w-full px-4 py-6 flex-1 space-y-6">
+    
+    <!-- Top Metrics Row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Total Consultas Realizadas</span>
+        <p class="text-2xl font-bold text-white mt-1">2,450</p>
+        <span class="text-xs text-sky-400">Procesamiento desatendido</span>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Velocidad Promedio</span>
+        <p class="text-2xl font-bold text-emerald-400 mt-1">1.1 s</p>
+        <span class="text-xs text-slate-400">por registro en el DOM</span>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Tasa de Efectividad</span>
+        <p class="text-2xl font-bold text-sky-400 mt-1">99.8%</p>
+        <span class="text-xs text-emerald-400">Sin bloqueos ni timeouts</span>
+      </div>
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Discrepancias Halladas</span>
+        <p class="text-2xl font-bold text-amber-400 mt-1">18</p>
+        <span class="text-xs text-amber-400">Listas para subsanación</span>
+      </div>
+    </div>
+
+    <!-- Execution & Console Grid -->
+    <div class="grid lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- Console Simulator -->
+      <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-terminal text-emerald-400"></i> Consola de Navegación Automatizada
+          </h3>
+          <span class="text-[11px] font-mono text-slate-500">WebDriver: Chrome Headless</span>
+        </div>
+
+        <div class="bg-slate-950 font-mono text-xs p-4 rounded-xl space-y-1.5 border border-slate-800 max-h-72 overflow-y-auto">
+          <p class="text-slate-500">> python 01_df_correo.py --input padron_maestro.xlsx</p>
+          <p class="text-slate-400">[01_df] Normalizando 2,450 registros de entrada... OK</p>
+          <p class="text-slate-500">> python 02_xtraer_data_dni.py --headless true</p>
+          <p class="text-sky-400">[Selenium] Inicializando WebDriverWait con ExpectedConditions</p>
+          <p class="text-emerald-400">[Batch #1] 0001 - 0500: Extracción completada en 8.2 min</p>
+          <p class="text-emerald-400">[Batch #2] 0501 - 1000: Extracción completada en 8.0 min</p>
+          <p class="text-slate-500">> python 03_comparar_data.py</p>
+          <p class="text-amber-400">[Auditoría] Comparando DataFrames de Pandas: 18 discrepancias</p>
+          <p class="text-emerald-300 font-bold">[Finalizado] Reporte exportado a 'discrepancias_auditadas.csv'</p>
+        </div>
+      </div>
+
+      <!-- Comparison Summary Chart -->
+      <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-sky-400"></i> Distribución de Resultados del Lote
+          </h3>
+          <span class="text-xs text-slate-400">2,450 Evaluados</span>
+        </div>
+
+        <div class="h-64 flex items-center justify-center">
+          <canvas id="auditChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Audit Table -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+      <div class="p-4 border-b border-slate-800 flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-table-list text-emerald-400"></i>
+          <h3 class="font-bold text-white text-sm">Muestra de Registros Cotejados</h3>
+        </div>
+        <button class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition">
+          <i class="fa-solid fa-file-csv"></i> Descargar CSV Completo
+        </button>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-300">
+          <thead class="bg-slate-950 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
+            <tr>
+              <th class="p-3">DNI</th>
+              <th class="p-3">Dato Interno</th>
+              <th class="p-3">Dato Extraído (Portal Web)</th>
+              <th class="p-3">Tiempo Scrape</th>
+              <th class="p-3">Estado Cotejo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            <tr class="hover:bg-slate-850/50 transition">
+              <td class="p-3 font-mono font-bold text-sky-400">45892134</td>
+              <td class="p-3">Juan Pérez Mendoza</td>
+              <td class="p-3 text-emerald-400">JUAN CARLOS PÉREZ MENDOZA</td>
+              <td class="p-3 font-mono text-slate-500">1.05s</td>
+              <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Coincidencia</span></td>
+            </tr>
+            <tr class="hover:bg-slate-850/50 transition bg-amber-500/5">
+              <td class="p-3 font-mono font-bold text-amber-400">72109480</td>
+              <td class="p-3">Maria Rodríguez Silva</td>
+              <td class="p-3 text-amber-400 font-semibold">MARTHA RODRÍGUEZ SILVA</td>
+              <td class="p-3 font-mono text-slate-500">1.12s</td>
+              <td class="p-3"><span class="bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded border border-amber-500/30">Nombre Discrepante</span></td>
+            </tr>
+            <tr class="hover:bg-slate-850/50 transition">
+              <td class="p-3 font-mono font-bold text-sky-400">73928174</td>
+              <td class="p-3">Lucía Fernández Ramos</td>
+              <td class="p-3 text-emerald-400">LUCÍA ISABEL FERNÁNDEZ RAMOS</td>
+              <td class="p-3 font-mono text-slate-500">0.98s</td>
+              <td class="p-3"><span class="bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/30">Coincidencia</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-slate-950 border-t border-slate-800 text-center py-4 text-xs text-slate-500">
+    Desarrollado por <a href="https://github.com/Enybyy" class="text-emerald-400 hover:underline">Eliud RM</a> — Soluciones de Software & Automatización Freelance
+  </footer>
+
+  <script>
+    const ctx = document.getElementById('auditChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Datos Coincidentes (2,432)', 'Discrepancias (18)'],
+        datasets: [{
+          data: [2432, 18],
+          backgroundColor: ['#10b981', '#f59e0b'],
+          borderColor: '#0f172a',
+          borderWidth: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 } } }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
