@@ -1,6 +1,20 @@
 # 🕷️ Web Scraping & Data Extraction Pipeline con Selenium y Pandas
 > **Pipeline automatizado de extracción web, emulación de navegación y auditoría masiva de registros contra portales en línea sin API pública.**
 
+<p align="center">
+  <a href="https://enybyy.github.io/web-scraping-selenium-pipeline/" target="_blank">
+    <img src="https://img.shields.io/badge/▶️_PROBAR_DEMO_EN_VIVO-GitHub_Pages-22c55e?style=for-the-badge&logo=github&logoColor=white" alt="Demo en Vivo" />
+  </a>
+  <a href="https://www.linkedin.com/in/eliud-rm/" target="_blank">
+    <img src="https://img.shields.io/badge/LinkedIn-Eliud_RM-0284c7?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/screenshot-scraping-dashboard.png" alt="Dashboard y Monitor de Scraping" width="48%" style="border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
+  <img src="assets/screenshots/screenshot-scraping-table.png" alt="Tabla Interactiva de Cotejo de Datos" width="48%" style="border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
+</p>
+
 [![Python](https://img.shields.io/badge/Python-3.x-3776ab.svg)](https://www.python.org/)
 [![Selenium](https://img.shields.io/badge/Web%20Driver-Selenium-43B02A.svg)](https://www.selenium.dev/)
 [![Data Processing](https://img.shields.io/badge/Data%20Engine-Pandas-150458.svg)](https://pandas.pydata.org/)
@@ -10,11 +24,10 @@
 
 ## 📌 El Desafío de Negocio
 
-En sectores como la gestión de cobranzas, recursos humanos, auditoría legal o verificación de clientes (KYC), es común necesitar comprobar grandes volúmenes de identificaciones o expedientes contra portales web oficiales o plataformas gubernamentales que:
-
+En sectores como cobranzas, recursos humanos, auditoría legal o verificación de clientes (KYC), es común necesitar comprobar grandes volúmenes de identificaciones o expedientes contra portales oficiales que:
 - **No ofrecen APIs públicas** o cobran tarifas prohibitivas por consulta individual.
-- **Requieren navegación manual paso a paso**: interactuar con formularios, seleccionar opciones en menús desplegables y esperar la carga dinámica de tablas.
-- **Ocasionan demoras intolerables**: Hacer este procedimiento a mano para miles de personas requiere semanas de trabajo de varios asistentes administrativos y genera frecuentes omisiones o errores de tipeo.
+- **Requieren navegación manual paso a paso**: interactuar con formularios, seleccionar opciones en menús y esperar la carga dinámica de tablas.
+- **Ocasionan demoras intolerables**: Hacer este procedimiento a mano para miles de personas requiere semanas de trabajo y genera frecuentes omisiones o errores de tipeo.
 
 ---
 
@@ -25,13 +38,13 @@ Este proyecto implementa un **pipeline modular de extracción y cotejo de datos 
 1. **Lectura y Normalización de Fuentes (`01_df_correo.py`)**:
    - Carga la base de datos interna y prepara los lotes de registros a consultar, limpiando formatos y caracteres especiales.
 2. **Navegación Emulada y Extracción Dinámica (`02_xtraer_data_dni.py`)**:
-   - Automatiza el navegador para acceder al portal objetivo, ingresar secuencialmente cada número de identificación, enviar el formulario y esperar a que el DOM procese la respuesta dinámica.
-   - Extrae con precisión nombres completos, apellidos, vigencia y demás campos relevantes.
+   - Automatiza el navegador para ingresar secuencialmente cada número, enviar formularios y esperar respuestas dinámicas.
 3. **Cotejo y Auditoría Automatizada (`03_comparar_data.py`)**:
    - Cruza la información obtenida en tiempo real contra los registros internos de la empresa.
-   - Detecta discrepancias de nombres, suplantaciones o datos desactualizados.
 4. **Exportación de Informes de Discrepancias (`F_verificar_dni_0.1.py`)**:
-   - Genera archivos estructurados (CSV/Excel) listos para la toma de decisiones o para iniciar acciones de regularización.
+   - Genera archivos estructurados (CSV/Excel) listos para subsanación o regularización.
+
+👉 **[Prueba el Dashboard Interactivo de Auditoría en Vivo aquí](https://enybyy.github.io/web-scraping-selenium-pipeline/)**
 
 ---
 
@@ -46,65 +59,19 @@ Este proyecto implementa un **pipeline modular de extracción y cotejo de datos 
 
 ---
 
-## ✨ Características Técnicas Destacadas
-
-- **Espera Explícita y Manejo del DOM**: Uso riguroso de `WebDriverWait` y `expected_conditions` para evitar fallos por latencia de red o renderizado lento de JavaScript en la página web destino.
-- **Arquitectura en Etapas (Pipeline Modular)**: Separación clara entre extracción, procesamiento y comparación para permitir reanudar el proceso sin perder datos ya scrapeados ante caídas imprevistas.
-- **Control de Excepciones y Resiliencia**: Captura de errores por elementos no encontrados o timeouts, registrando el estado del lote para no interrumpir el flujo general.
-- **Estructuración en DataFrames de Pandas**: Transformación inmediata de datos no estructurados de la web a tablas ordenadas y listas para analítica.
-
----
-
 ## 🛠️ Stack Tecnológico
 
 - **Lenguaje**: Python 3.
-- **Automatización de Navegador**: Selenium WebDriver.
+- **Automatización de Navegador**: Selenium WebDriver (Headless Chrome).
 - **Manipulación de Datos**: Pandas, NumPy.
 - **Formatos de Salida**: CSV, Excel (`openpyxl`).
 
 ---
 
-## 🗂️ Estructura del Repositorio
-
-```text
-├── VERIFICAR_DNI/
-│   ├── 01_df_correo.py           # Preparación y depuración de la base de datos origen
-│   ├── 02_xtraer_data_dni.py      # Automatización de scraping y extracción web con Selenium
-│   ├── 03_comparar_data.py       # Algoritmo de cotejo y detección de inconsistencias
-│   ├── F_verificar_dni_0.1.py    # Módulo integrado de verificación y exportación de reportes
-│   └── README.md                 # Documentación técnica interna
-└── README.md                     # Documentación general del repositorio
-```
-
----
-
-## 🚀 Instalación y Ejecución
-
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/Enybyy/web-scraping-selenium-pipeline.git
-   cd web-scraping-selenium-pipeline
-   ```
-
-2. **Instalar dependencias:**
-   ```bash
-   pip install selenium pandas openpyxl webdriver-manager
-   ```
-
-3. **Ejecutar el pipeline:**
-   ```bash
-   cd VERIFICAR_DNI
-   python 01_df_correo.py
-   python 02_xtraer_data_dni.py
-   python 03_comparar_data.py
-   ```
-
----
-
 ## 📬 ¿Necesitas extraer datos o automatizar flujos web en tu empresa?
 
-Desarrollo **bots de extracción de datos (web scraping ético), pipelines de auditoría de información y automatizaciones de navegación para portales sin API pública**.
+Desarrollo **robots de extracción de datos (web scraping ético), pipelines de auditoría de información y automatizaciones de navegación para portales sin API pública**.
 
+- **LinkedIn**: [Eliud RM](https://www.linkedin.com/in/eliud-rm/)
 - **GitHub**: [@Enybyy](https://github.com/Enybyy)
-- **Perfil Profesional**: Eliud RM — Data Science & Software Solutions
 - *Contáctame para diseñar una solución de extracción de datos a la medida de tus necesidades.*
