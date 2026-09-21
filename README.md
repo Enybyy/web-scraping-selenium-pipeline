@@ -1,3 +1,26 @@
+## 🇬🇧 English Summary
+
+**Automated web scraping and bulk data matching pipeline for compliance audits.**
+
+**The problem:** a compliance audit required cross-checking large volumes of records against an external web portal — done by hand, one lookup at a time.
+
+**The solution:** an unattended pipeline that performs the lookups and reconciliation automatically.
+
+- Selenium-driven extraction with retry handling and resilience to session drops
+- Pandas-based matching and discrepancy reporting
+- Structured output ready for audit review
+
+**Impact:** an audit process measured in days of manual lookups now runs as a scheduled job.
+
+**Stack:** Python · Selenium WebDriver · Pandas
+
+🔗 **[Live demo](https://enybyy.github.io/web-scraping-selenium-pipeline/)**
+
+---
+
+<details>
+<summary>📖 <b>Documentación completa en español</b> (click para expandir)</summary>
+
 # 🕷️ Web Scraping & Data Extraction Pipeline con Selenium y Pandas
 > **Pipeline automatizado de extracción web, emulación de navegación y auditoría masiva de registros contra portales en línea sin API pública.**
 
@@ -75,3 +98,6 @@ Desarrollo **robots de extracción de datos (web scraping ético), pipelines de 
 - **LinkedIn**: [Eliud RM](https://www.linkedin.com/in/eliud-rojas-mendoza-414652212/)
 - **GitHub**: [@Enybyy](https://github.com/Enybyy)
 - *Contáctame para diseñar una solución de extracción de datos a la medida de tus necesidades.*
+
+
+</details>
