@@ -14,58 +14,35 @@ De una página HTML a una tabla de trabajo: extracción de una carta de restaura
 
 *Captura real de la extracción sobre una copia local adaptada. La fuente no representa una consulta en vivo.*
 
-[Acerca del proyecto](#acerca-del-proyecto) · [Capturas](#capturas) · [Uso e instalación](#uso-e-instalación)
+[Acerca del proyecto](#acerca-del-proyecto) · [Capturas](#capturas) · [Recorrido](#en-el-día-a-día) · [Tecnología](#cómo-está-construido) · [Uso local](#uso-local)
 
 </div>
 
 ## Acerca del proyecto
 
-Enybyy Extract coloca la página de origen y sus resultados dentro del mismo recorrido. La carta de ejemplo conserva las entradas de una copia adaptada; el HTML puede inspeccionarse antes de definir qué información pasa a la tabla.
+Una carta o un catálogo puede ser fácil de leer en pantalla y difícil de reutilizar como tabla. Enybyy Extract mantiene la página de origen a la vista mientras extrae sus entradas y permite elegir qué campos pasarán al archivo de trabajo.
 
-La selección de categorías, campos y formato permite preparar una lista de precios, un detalle de artículos o un resumen por categoría. La versión Python lleva el flujo a la consola y ofrece Selenium para ejecutar la extracción con navegador, manteniendo separados los datos de entrada y la salida.
+La misma extracción puede presentarse como detalle de artículos, lista de precios o resumen por categoría. Los filtros, las columnas y el orden se conservan en CSV y JSON, de modo que la salida corresponde a lo que se está revisando. La demo utiliza fuentes guardadas; la versión Python incorpora ejecución desde consola y navegador con Selenium.
+
+## En el día a día
+
+| Dentro del proyecto | Detalle |
+| --- | --- |
+| Página de origen | Vista de la fuente guardada y de su HTML con sangría. |
+| Extracción | Selectores CSS aplicados al documento, con campos y procedencia por registro. |
+| Selección de salida | Artículos, tarifas, columnas, categorías y orden de los resultados. |
+| Formatos de trabajo | Detalle, lista de precios o resumen por categoría; CSV y JSON. |
+| Consola y navegador | Flujo Python y ejecución opcional mediante Selenium. |
 
 ## Capturas
 
-<details>
-<summary><strong>La fuente HTML y sus etiquetas</strong></summary>
+### La fuente HTML y sus etiquetas
 
 ![La fuente HTML y sus etiquetas](assets/screenshots/enybyy-extract-html.png)
 
-</details>
-
-<details>
-<summary><strong>Catálogo adicional para probar paginación</strong></summary>
+### Catálogo adicional para probar paginación
 
 ![Catálogo adicional para probar paginación](assets/screenshots/enybyy-extract-catalog.png)
-
-</details>
-
-<details>
-<summary><strong>Vista móvil</strong></summary>
-
-![Vista móvil](assets/screenshots/enybyy-extract-mobile.png)
-
-</details>
-
-## Uso e instalación
-
-<details>
-<summary><strong>Ver el recorrido, las instrucciones y las notas técnicas</strong></summary>
-
-## Ejecutar
-
-Requiere Python 3.10 o posterior.
-
-```powershell
-git clone https://github.com/Enybyy/web-scraping-selenium-pipeline.git
-cd web-scraping-selenium-pipeline
-python -m venv .venv
-.venv\Scripts\python -m pip install -r requirements.txt
-.venv\Scripts\python pipeline.py
-.venv\Scripts\python -m http.server 5083 --bind 127.0.0.1
-```
-
-Abre [localhost:5083](http://localhost:5083) y pulsa **Extraer datos**. La consola escribe `output/catalog.csv` y `output/report.json`.
 
 ## La fuente de ejemplo
 
@@ -115,7 +92,37 @@ Para el catálogo adicional, sustituye la URI de ejemplo por una URI `file:///` 
 
 Una fuente HTTP requiere `--allow-network`, un esquema adaptado y un `robots.txt` legible. La CLI limita páginas y tamaño, rechaza ciclos y paginación fuera del origen o de la carpeta inicial. Los precios usan punto decimal; CSV conserva Unicode y neutraliza prefijos de fórmula. El HTML pegado se analiza sin ejecutar scripts. La demo estática usa el navegador; Python y Selenium se ejecutan desde la consola.
 
-## Verificar
+## Cómo está construido
+
+| Área | Tecnología |
+| --- | --- |
+| Demo | HTML, CSS y JavaScript |
+| Extracción local | Python y selectores CSS configurados en JSON |
+| Navegador opcional | Selenium y Chrome |
+| Salida | CSV y JSON |
+| Verificación | unittest y Playwright |
+
+## Uso local
+
+<details>
+<summary><strong>Ejecutar en tu equipo</strong></summary>
+
+Requiere Python 3.10 o posterior.
+
+```powershell
+git clone https://github.com/Enybyy/web-scraping-selenium-pipeline.git
+cd web-scraping-selenium-pipeline
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python pipeline.py
+.venv\Scripts\python -m http.server 5083 --bind 127.0.0.1
+```
+
+Abre [localhost:5083](http://localhost:5083) y pulsa **Extraer datos**. La consola escribe `output/catalog.csv` y `output/report.json`.
+
+</details>
+
+### Verificar
 
 ```powershell
 .venv\Scripts\python -m unittest discover -s tests -v
@@ -126,8 +133,6 @@ npm test
 ```
 
 Las pruebas verifican la carta, el catálogo adicional, exportaciones, selectores, HTML formateado y vista móvil. Ver [revisión](docs/verification.md).
-
-</details>
 
 ---
 
