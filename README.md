@@ -1,10 +1,56 @@
+<div align="center">
+
 # Enybyy Extract
 
-Extrae una carta de restaurante basada en una página real, convierte su HTML en una tabla y exporta CSV o JSON.
+De una página HTML a una tabla de trabajo: extracción de una carta de restaurante, selección de campos y exportación CSV o JSON.
 
-![Enybyy Extract extrayendo la carta](assets/screenshots/enybyy-extract-desktop.png)
+<a href="https://enybyy.github.io/web-scraping-selenium-pipeline/"><img src="docs/media/demo.svg" width="360" alt="Abrir demo"></a>
 
-[Abrir demo](https://enybyy.github.io/web-scraping-selenium-pipeline/?v=menu-20261001-2) · [HTML con sangría](assets/screenshots/enybyy-extract-html.png) · [Vista móvil](assets/screenshots/enybyy-extract-mobile.png)
+<p><a href="https://github.com/Enybyy"><img src="docs/media/github.svg" width="112" alt="GitHub de Eliud Rojas Mendoza"></a>
+<a href="https://www.linkedin.com/in/eliud-rojas-mendoza-414652212/"><img src="docs/media/linkedin.svg" width="112" alt="LinkedIn de Eliud Rojas Mendoza"></a>
+<a href="https://www.upwork.com/freelancers/~01471ca462b236e8e5"><img src="docs/media/upwork.svg" width="112" alt="Upwork de Eliud Rojas Mendoza"></a></p>
+
+[![Enybyy Extract en uso](assets/screenshots/enybyy-extract-desktop.png)](https://enybyy.github.io/web-scraping-selenium-pipeline/)
+
+*Captura real de la extracción sobre una copia local adaptada. La fuente no representa una consulta en vivo.*
+
+[Acerca del proyecto](#acerca-del-proyecto) · [Capturas](#capturas) · [Uso e instalación](#uso-e-instalación)
+
+</div>
+
+## Acerca del proyecto
+
+Enybyy Extract coloca la página de origen y sus resultados dentro del mismo recorrido. La carta de ejemplo conserva las entradas de una copia adaptada; el HTML puede inspeccionarse antes de definir qué información pasa a la tabla.
+
+La selección de categorías, campos y formato permite preparar una lista de precios, un detalle de artículos o un resumen por categoría. La versión Python lleva el flujo a la consola y ofrece Selenium para ejecutar la extracción con navegador, manteniendo separados los datos de entrada y la salida.
+
+## Capturas
+
+<details>
+<summary><strong>La fuente HTML y sus etiquetas</strong></summary>
+
+![La fuente HTML y sus etiquetas](assets/screenshots/enybyy-extract-html.png)
+
+</details>
+
+<details>
+<summary><strong>Catálogo adicional para probar paginación</strong></summary>
+
+![Catálogo adicional para probar paginación](assets/screenshots/enybyy-extract-catalog.png)
+
+</details>
+
+<details>
+<summary><strong>Vista móvil</strong></summary>
+
+![Vista móvil](assets/screenshots/enybyy-extract-mobile.png)
+
+</details>
+
+## Uso e instalación
+
+<details>
+<summary><strong>Ver el recorrido, las instrucciones y las notas técnicas</strong></summary>
 
 ## Ejecutar
 
@@ -81,4 +127,16 @@ npm test
 
 Las pruebas verifican la carta, el catálogo adicional, exportaciones, selectores, HTML formateado y vista móvil. Ver [revisión](docs/verification.md).
 
-Desarrollado por [Eliud Rojas Mendoza · Enybyy](https://github.com/Enybyy). Licencia MIT para el código del proyecto. La carta adaptada se incluye como ejemplo de datos aportados para la demo.
+</details>
+
+---
+
+<div align="center">
+
+**Eliud Rojas Mendoza · Enybyy**
+
+<p><a href="https://github.com/Enybyy"><img src="docs/media/github.svg" width="112" alt="GitHub de Eliud Rojas Mendoza"></a>
+<a href="https://www.linkedin.com/in/eliud-rojas-mendoza-414652212/"><img src="docs/media/linkedin.svg" width="112" alt="LinkedIn de Eliud Rojas Mendoza"></a>
+<a href="https://www.upwork.com/freelancers/~01471ca462b236e8e5"><img src="docs/media/upwork.svg" width="112" alt="Upwork de Eliud Rojas Mendoza"></a></p>
+
+</div>
