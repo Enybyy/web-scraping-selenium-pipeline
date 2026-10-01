@@ -4,7 +4,7 @@ Extrae una carta de restaurante basada en una página real, convierte su HTML en
 
 ![Enybyy Extract extrayendo la carta](assets/screenshots/enybyy-extract-desktop.png)
 
-[Abrir demo](https://enybyy.github.io/web-scraping-selenium-pipeline/) · [HTML con sangría](assets/screenshots/enybyy-extract-html.png) · [Vista móvil](assets/screenshots/enybyy-extract-mobile.png)
+[Abrir demo](https://enybyy.github.io/web-scraping-selenium-pipeline/?v=menu-20261001-2) · [HTML con sangría](assets/screenshots/enybyy-extract-html.png) · [Vista móvil](assets/screenshots/enybyy-extract-mobile.png)
 
 ## Ejecutar
 

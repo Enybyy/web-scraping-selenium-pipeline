@@ -1,5 +1,7 @@
 'use strict';
 const $ = id => document.getElementById(id);
+const RELEASE = 'menu-20261001-2';
+function sourceUrl(path) { const url = new URL(path,location.href); url.searchParams.set('v',RELEASE); return url.href; }
 const profiles = {
   menu: {source: 'fixtures/menu.html', currency: 'PEN', selectors: {item: '.menu-item', sku: '.sku', name: '.name', record_type: '.record-type', category: '.category', price: '.price', description: '.description'}},
   fixture: {source: 'fixtures/catalog-1.html', currency: 'USD', selectors: {item: '.product', sku: '.sku', name: 'h2', category: '.category', price: '.price', stock: '.stock'}}
@@ -128,7 +130,7 @@ function parseDocument(html, source, schema) {
   return {rows,rejected,next:doc.querySelector('a[rel="next"]')?.getAttribute('href')};
 }
 async function getHtml(path) {
-  const response = await fetch(path,{cache:'no-store',signal:AbortSignal.timeout(10000)});
+  const response = await fetch(sourceUrl(path),{cache:'no-store',signal:AbortSignal.timeout(10000)});
   if (!response.ok) throw new Error(`La fuente respondió HTTP ${response.status}.`);
   const html = await response.text(); if (html.length > 2_000_000) throw new Error('El documento supera 2 MB.'); return html;
 }
@@ -190,7 +192,7 @@ async function run() {
       const html = paste ? $('customHtml').value : await getHtml(url.href);
       if (!html.trim()) throw new Error('Pega el HTML antes de extraer.'); if (html.length > 2_000_000) throw new Error('El documento supera 2 MB.');
       rawHtml = html; $('sourcePath').textContent = paste ? source : `fixtures/${source}`;
-      if (!paste) $('sourceFrame').src = url.href; renderHtml(html);
+      if (!paste) $('sourceFrame').src = sourceUrl(url.href); renderHtml(html);
       const batch = parseDocument(html,source,schema); nextResult.pages.push(source); nextResult.rejected.push(...batch.rejected);
       for (const row of batch.rows) {
         if (seen.has(row.sku)) nextResult.duplicates.push({sku:row.sku,source}); else {seen.add(row.sku); nextResult.rows.push(row);}
@@ -248,11 +250,11 @@ $('sourceMode').addEventListener('change',async () => {
   $('stockFilter').hidden = isMenu(); $('pasteBox').hidden = !paste; $('pages').disabled = paste || isMenu(); $('visual').disabled = paste;
   $('sourcePath').textContent = paste ? 'HTML pegado · no ejecuta scripts' : profile.source;
   $('sourceNote').textContent = paste ? 'Documento analizado en tu navegador' : isMenu() ? 'Copia de una fuente real · marcas generalizadas' : 'Catálogo sintético de prueba';
-  document.querySelector('.source-caption a').href = profile.source;
+  document.querySelector('.source-caption a').href = sourceUrl(profile.source);
   $('sourceFrame').title = isMenu() ? 'Carta de restaurante sin marcas' : 'Catálogo sintético Atelier';
   rawHtml = '';
   if (!paste) {
-    $('sourceFrame').src = profile.source;
+    $('sourceFrame').src = sourceUrl(profile.source);
     try {const html = await getHtml(profile.source); if (generation !== sourceGeneration) return; rawHtml = html;} catch(error) {if (generation === sourceGeneration) $('summary').textContent = error.message;}
   }
   if (generation === sourceGeneration) showSource(paste ? 'html' : 'visual');
