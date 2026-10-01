@@ -1,103 +1,93 @@
-## 🇬🇧 English Summary
+# Extracta
 
-**Automated web scraping and bulk data matching pipeline for compliance audits.**
+Extrae catálogos HTML con selectores CSS, recorre páginas, valida los registros y exporta CSV o JSON con su procedencia.
 
-**The problem:** a compliance audit required cross-checking large volumes of records against an external web portal — done by hand, one lookup at a time.
+![Extracta ejecutando una extracción real del catálogo local](assets/screenshots/extracta-desktop.png)
 
-**The solution:** an unattended pipeline that performs the lookups and reconciliation automatically.
+[Abrir demo web](https://enybyy.github.io/web-scraping-selenium-pipeline/) · [Imagen para Upwork, 4:3](assets/screenshots/extracta-upwork-4x3.png) · [Vista móvil](assets/screenshots/extracta-mobile.png)
 
-- Selenium-driven extraction with retry handling and resilience to session drops
-- Pandas-based matching and discrepancy reporting
-- Structured output ready for audit review
+**English:** A working catalog extraction workbench with editable CSS selectors, real HTML pagination, duplicate detection, validation, and CSV/JSON exports. The browser demo extracts a clearly labeled synthetic catalog; the Python CLI supports local files, HTTP sources and Selenium-rendered pages.
 
-**Impact:** an audit process measured in days of manual lookups now runs as a scheduled job.
+## Instalar y ejecutar
 
-**Stack:** Python · Selenium WebDriver · Pandas
+Requiere Python 3.10 o posterior. La demo web funciona con un servidor estático; no necesita claves ni dependencias de JavaScript.
 
-🔗 **[Live demo](https://enybyy.github.io/web-scraping-selenium-pipeline/)**
+```powershell
+git clone https://github.com/Enybyy/web-scraping-selenium-pipeline.git
+cd web-scraping-selenium-pipeline
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python pipeline.py
+.venv\Scripts\python -m http.server 5083 --bind 127.0.0.1
+```
 
----
+Abre [localhost:5083](http://localhost:5083). En macOS/Linux reemplaza `.venv\Scripts\python` por `.venv/bin/python`.
 
-<details>
-<summary>📖 <b>Documentación completa en español</b> (click para expandir)</summary>
+La extracción de consola escribe `output/catalog.csv` y `output/report.json`. Usa `--output otra-carpeta` para cambiar el destino.
 
-# 🕷️ Web Scraping & Data Extraction Pipeline con Selenium y Pandas
-> **Pipeline automatizado de extracción web, emulación de navegación y auditoría masiva de registros contra portales en línea sin API pública.**
+## Probar la mesa de extracción
 
-<p align="center">
-  <a href="https://enybyy.github.io/web-scraping-selenium-pipeline/" target="_blank">
-    <img src="https://img.shields.io/badge/▶️_PROBAR_DEMO_EN_VIVO-GitHub_Pages-22c55e?style=for-the-badge&logo=github&logoColor=white" alt="Demo en Vivo" />
-  </a>
-  <a href="https://www.linkedin.com/in/eliud-rojas-mendoza-414652212/" target="_blank">
-    <img src="https://img.shields.io/badge/LinkedIn-Eliud_RM-0284c7?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
-  </a>
-</p>
+1. Pulsa **Extraer datos**. Se leen los archivos de `fixtures/`, siguiendo el enlace HTML `rel="next"`.
+2. Compara la página fuente con la tabla. La pestaña **HTML** permite inspeccionar el documento que se leyó.
+3. Filtra por nombre, categoría o código; activa **Solo con stock**.
+4. Descarga CSV o JSON. El archivo contiene los registros visibles después de aplicar los filtros. JSON incluye también las páginas y el informe de exclusiones.
+5. Cambia un selector o selecciona **Pegar mi propio HTML** para usar otro documento. El HTML pegado se analiza como texto; sus scripts no se ejecutan.
 
-<p align="center">
-  <img src="assets/screenshots/screenshot-scraping-dashboard.png" alt="Dashboard y Monitor de Scraping" width="48%" style="border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
-  <img src="assets/screenshots/screenshot-scraping-table.png" alt="Tabla Interactiva de Cotejo de Datos" width="48%" style="border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
-</p>
+El resultado del catálogo incluido es reproducible: **3 páginas, 10 productos únicos, 1 duplicado y 1 registro con precio incompleto**. Hay 12 tarjetas de origen, una de ellas repite `AT-001`; `AT-011` no publica precio y se excluye. `AT-009` tiene stock cero y sigue siendo un registro válido.
 
-[![Python](https://img.shields.io/badge/Python-3.x-3776ab.svg)](https://www.python.org/)
-[![Selenium](https://img.shields.io/badge/Web%20Driver-Selenium-43B02A.svg)](https://www.selenium.dev/)
-[![Data Processing](https://img.shields.io/badge/Data%20Engine-Pandas-150458.svg)](https://pandas.pydata.org/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+Atelier es una tienda ficticia con datos sintéticos y precios de ejemplo en USD. La extracción, los filtros y los archivos descargados funcionan de verdad. La demo estática no consulta sitios externos ni ejecuta Python/Selenium: eso corresponde a la CLI. No presenta métricas de productividad, clientes o resultados comerciales sin evidencia.
 
----
+## Adaptar la extracción en Python
 
-## 📌 El Desafío de Negocio
+Los campos del catálogo son `sku`, `name`, `category`, `price` y `stock`; sus selectores y el enlace de paginación viven en `schema.json`. Ajusta ese archivo a la estructura de tu catálogo. Los selectores de los campos son relativos al contenedor de cada producto.
 
-En sectores como cobranzas, recursos humanos, auditoría legal o verificación de clientes (KYC), es común necesitar comprobar grandes volúmenes de identificaciones o expedientes contra portales oficiales que:
-- **No ofrecen APIs públicas** o cobran tarifas prohibitivas por consulta individual.
-- **Requieren navegación manual paso a paso**: interactuar con formularios, seleccionar opciones en menús y esperar la carga dinámica de tablas.
-- **Ocasionan demoras intolerables**: Hacer este procedimiento a mano para miles de personas requiere semanas de trabajo y genera frecuentes omisiones o errores de tipeo.
+```powershell
+# Otro archivo local y un esquema adaptado
+.venv\Scripts\python pipeline.py --source "file:///C:/datos/catalogo.html" --schema schema.json --max-pages 5
 
----
+# Página dinámica: Chrome headless con espera explícita al contenedor
+.venv\Scripts\python pipeline.py --browser
 
-## 💡 La Solución Implementada
+# Fuente HTTP autorizada: acceso explícito, robots.txt y pausa entre páginas
+.venv\Scripts\python pipeline.py --source "https://tu-dominio.example/catalogo" --schema schema.json --allow-network --delay 2 --max-pages 5
+```
 
-Este proyecto implementa un **pipeline modular de extracción y cotejo de datos automatizado** utilizando **Python, Selenium WebDriver y Pandas**:
+Selenium requiere Chrome; Selenium Manager resuelve el controlador y puede necesitar conexión en la primera ejecución. El código cierra el navegador incluso si hay un error.
 
-1. **Lectura y Normalización de Fuentes (`01_df_correo.py`)**:
-   - Carga la base de datos interna y prepara los lotes de registros a consultar, limpiando formatos y caracteres especiales.
-2. **Navegación Emulada y Extracción Dinámica (`02_xtraer_data_dni.py`)**:
-   - Automatiza el navegador para ingresar secuencialmente cada número, enviar formularios y esperar respuestas dinámicas.
-3. **Cotejo y Auditoría Automatizada (`03_comparar_data.py`)**:
-   - Cruza la información obtenida en tiempo real contra los registros internos de la empresa.
-4. **Exportación de Informes de Discrepancias (`F_verificar_dni_0.1.py`)**:
-   - Genera archivos estructurados (CSV/Excel) listos para subsanación o regularización.
+La CLI permite hasta 50 páginas, detecta ciclos, conserva la primera aparición de cada código y registra las exclusiones. La paginación se limita al origen inicial; con archivos locales, a la carpeta inicial. Las peticiones HTML tienen timeout y límite de 2 MB. Para fuentes HTTP, una lectura fallida o una prohibición en `robots.txt` detiene la ejecución. No incluye evasión de bloqueos ni consultas de identidad.
 
-👉 **[Prueba el Dashboard Interactivo de Auditoría en Vivo aquí](https://enybyy.github.io/web-scraping-selenium-pipeline/)**
+## Validación y límites
 
----
+Nombre y código son obligatorios. El precio admite punto decimal y coma de miles (`$1,234.50`); el stock admite enteros no negativos. Si necesitas precios con coma decimal, modifica `price_number` y `parsePrice` antes de usar esa fuente. CSV conserva Unicode, cita comas/comillas y neutraliza prefijos de fórmula.
 
-## 📈 Impacto y Mejoras Conseguidas
+Las pruebas cubren la fuente local y la lógica de extracción. La integración de un sitio externo necesita un esquema específico y su propia verificación; no se ha validado un servicio de producción. Los cambios de estructura del sitio pueden requerir nuevos selectores. No hay programación de tareas, autenticación ni persistencia histórica.
 
-| Desafío Operativo | Proceso Manual | Con el Pipeline de Scraping | Mejora Cuantificable |
-|---|---|---|---|
-| **Velocidad de Verificación** | 1 a 2 consultas por minuto por operador | Cientos de consultas por hora de manera desatendida | **Aumento de velocidad x30** |
-| **Costo por Registro Verificado** | Alto costo en horas-hombre | Costo marginal cercano a cero | **Ahorro de hasta el 80% en presupuesto operativo** |
-| **Fiabilidad del Cotejo** | Errores por cansancio visual del operador | Comparación matemática exacta celda por celda | **Precisión de auditoría del 100%** |
-| **Escalabilidad** | Imposible procesar grandes picos de demanda | Capaz de procesar lotes masivos durante la noche | **Capacidad de respuesta inmediata ante auditorías** |
+```powershell
+.venv\Scripts\python -m unittest discover -s tests -v
+```
 
----
+Para las pruebas de navegador y regenerar las capturas (Node.js 20 o posterior):
 
-## 🛠️ Stack Tecnológico
+```powershell
+npm install
+npx playwright install chromium
+# Mantén el servidor del puerto 5083 activo en otra terminal
+npm test
+```
 
-- **Lenguaje**: Python 3.
-- **Automatización de Navegador**: Selenium WebDriver (Headless Chrome).
-- **Manipulación de Datos**: Pandas, NumPy.
-- **Formatos de Salida**: CSV, Excel (`openpyxl`).
+Se verificaron el motor HTML, el modo Selenium sobre la misma fuente y el flujo web completo. El informe de revisión está en [docs/verification.md](docs/verification.md).
 
----
+## Un repositorio, un proyecto
 
-## 📬 ¿Necesitas extraer datos o automatizar flujos web en tu empresa?
+```text
+index.html / app.css / app.js   Mesa web estática
+pipeline.py / schema.json      Motor Python y configuración
+fixtures/                      Catálogo reproducible de 3 páginas
+tests/                         Pruebas del motor y navegador
+assets/screenshots/            Capturas reales de escritorio, móvil y Upwork
+docs/                          Diseño, revisión y cambios frente al código anterior
+```
 
-Desarrollo **robots de extracción de datos (web scraping ético), pipelines de auditoría de información y automatizaciones de navegación para portales sin API pública**.
+Se reemplazaron los scripts antiguos de DNI y sus rutas personales por una herramienta de extracción de catálogos. Las consultas de identidad pertenecen al proyecto independiente de validación de DNI.
 
-- **LinkedIn**: [Eliud RM](https://www.linkedin.com/in/eliud-rojas-mendoza-414652212/)
-- **GitHub**: [@Enybyy](https://github.com/Enybyy)
-- *Contáctame para diseñar una solución de extracción de datos a la medida de tus necesidades.*
-
-
-</details>
+Desarrollado por [Eliud Rojas Mendoza](https://github.com/Enybyy). Licencia MIT.

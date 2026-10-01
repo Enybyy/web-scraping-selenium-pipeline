@@ -1,0 +1,11 @@
+{
+  "item": ".product",
+  "next": "a[rel='next']",
+  "fields": {
+    "sku": ".sku",
+    "name": "h2",
+    "category": ".category",
+    "price": ".price",
+    "stock": ".stock"
+  }
+}
