@@ -1,16 +1,14 @@
-# Extracta
+# Enybyy Extract
 
-Extrae catálogos HTML con selectores CSS, recorre páginas, valida los registros y exporta CSV o JSON con su procedencia.
+Extrae una carta de restaurante basada en una página real, convierte su HTML en una tabla y exporta CSV o JSON.
 
-![Extracta ejecutando una extracción real del catálogo local](assets/screenshots/extracta-desktop.png)
+![Enybyy Extract extrayendo la carta](assets/screenshots/enybyy-extract-desktop.png)
 
-[Abrir demo web](https://enybyy.github.io/web-scraping-selenium-pipeline/) · [Imagen para Upwork, 4:3](assets/screenshots/extracta-upwork-4x3.png) · [Vista móvil](assets/screenshots/extracta-mobile.png)
+[Abrir demo](https://enybyy.github.io/web-scraping-selenium-pipeline/) · [HTML con sangría](assets/screenshots/enybyy-extract-html.png) · [Vista móvil](assets/screenshots/enybyy-extract-mobile.png)
 
-**English:** A working catalog extraction workbench with editable CSS selectors, real HTML pagination, duplicate detection, validation, and CSV/JSON exports. The browser demo extracts a clearly labeled synthetic catalog; the Python CLI supports local files, HTTP sources and Selenium-rendered pages.
+## Ejecutar
 
-## Instalar y ejecutar
-
-Requiere Python 3.10 o posterior. La demo web funciona con un servidor estático; no necesita claves ni dependencias de JavaScript.
+Requiere Python 3.10 o posterior.
 
 ```powershell
 git clone https://github.com/Enybyy/web-scraping-selenium-pipeline.git
@@ -21,73 +19,66 @@ python -m venv .venv
 .venv\Scripts\python -m http.server 5083 --bind 127.0.0.1
 ```
 
-Abre [localhost:5083](http://localhost:5083). En macOS/Linux reemplaza `.venv\Scripts\python` por `.venv/bin/python`.
+Abre [localhost:5083](http://localhost:5083) y pulsa **Extraer datos**. La consola escribe `output/catalog.csv` y `output/report.json`.
 
-La extracción de consola escribe `output/catalog.csv` y `output/report.json`. Usa `--output otra-carpeta` para cambiar el destino.
+## La fuente de ejemplo
 
-## Probar la mesa de extracción
+`fixtures/menu.html` es una copia simplificada del archivo de carta real proporcionado para este proyecto. Conserva **164 entradas**, sus precios en soles y sus descripciones. Se eliminaron 44 repeticiones de las variantes responsive, marcas de restaurante y bebidas, scripts, rastreadores, recursos externos y el código del constructor de páginas. Los nombres comerciales se sustituyeron por nombres generales. Los códigos `CARTA-001` son identificadores locales añadidos para el ejemplo; no son códigos publicados por el restaurante.
 
-1. Pulsa **Extraer datos**. Se leen los archivos de `fixtures/`, siguiendo el enlace HTML `rel="next"`.
-2. Compara la página fuente con la tabla. La pestaña **HTML** permite inspeccionar el documento que se leyó.
-3. Filtra por nombre, categoría o código; activa **Solo con stock**.
-4. Descarga CSV o JSON. El archivo contiene los registros visibles después de aplicar los filtros. JSON incluye también las páginas y el informe de exclusiones.
-5. Cambia un selector o selecciona **Pegar mi propio HTML** para usar otro documento. El HTML pegado se analiza como texto; sus scripts no se ejecutan.
+La carta se visualiza con su propio diseño de restaurante. La pestaña **HTML** muestra el documento con dos espacios de sangría y resaltado de etiquetas. La extracción lee el archivo HTML mediante selectores CSS: los resultados no están incrustados como una tabla precalculada. Se conserva el contenido de la copia guardada; no se afirma que los precios sigan vigentes ni que exista una consulta en vivo.
 
-El resultado del catálogo incluido es reproducible: **3 páginas, 10 productos únicos, 1 duplicado y 1 registro con precio incompleto**. Hay 12 tarjetas de origen, una de ellas repite `AT-001`; `AT-011` no publica precio y se excluye. `AT-009` tiene stock cero y sigue siendo un registro válido.
+No se inventa stock: la carta extrae `sku`, `name`, `category`, `price`, `description`, `record_type` y `source`. Los campos vacíos de descripción se conservan. Puedes filtrar resultados y descargar solo los registros visibles. El catálogo sintético Atelier de tres páginas sigue disponible como fuente adicional para probar paginación, duplicados, stock y registros incompletos.
 
-Atelier es una tienda ficticia con datos sintéticos y precios de ejemplo en USD. La extracción, los filtros y los archivos descargados funcionan de verdad. La demo estática no consulta sitios externos ni ejecuta Python/Selenium: eso corresponde a la CLI. No presenta métricas de productividad, clientes o resultados comerciales sin evidencia.
+## Elegir qué extraer
 
-## Adaptar la extracción en Python
+El alcance cambia según la fuente. La carta distingue **2 tarifas del buffet**, **2 adicionales** y **160 bebidas**. Por defecto muestra los **162 artículos**; Adultos y Niños solo aparecen en **Tarifas del buffet** o **Todo, separado por tipo**, con su clasificación explícita. Los tipos se añadieron en la copia según las secciones originales; no son metadatos publicados por el restaurante. El catálogo muestra sus 10 productos con stock y moneda USD.
 
-Los campos del catálogo son `sku`, `name`, `category`, `price` y `stock`; sus selectores y el enlace de paginación viven en `schema.json`. Ajusta ese archivo a la estructura de tu catálogo. Los selectores de los campos son relativos al contenedor de cada producto.
+Ambas fuentes permiten **detalle completo**, **lista de precios** y **resumen por categoría**. El resumen calcula cantidad de entradas y precios mínimo y máximo sobre la selección actual. Puedes marcar las columnas de salida y ordenar por nombre, precio o categoría. Tabla, CSV y JSON usan exactamente la misma selección; los selectores y la moneda se actualizan al cambiar de fuente. Si no seleccionas columnas, se desactiva la descarga.
+
+La fuente completa se extrae y valida antes de aplicar alcance, filtros y columnas. No se omite la validación de precios por ocultar una columna. En consola se usa el mismo criterio:
 
 ```powershell
-# Otro archivo local y un esquema adaptado
-.venv\Scripts\python pipeline.py --source "file:///C:/datos/catalogo.html" --schema schema.json --max-pages 5
-
-# Página dinámica: Chrome headless con espera explícita al contenedor
-.venv\Scripts\python pipeline.py --browser
-
-# Fuente HTTP autorizada: acceso explícito, robots.txt y pausa entre páginas
-.venv\Scripts\python pipeline.py --source "https://tu-dominio.example/catalogo" --schema schema.json --allow-network --delay 2 --max-pages 5
+# Artículos de la carta, sin tarifas de ingreso (predeterminado)
+.venv\Scripts\python pipeline.py
+# Tarifas: Adultos y Niños
+.venv\Scripts\python pipeline.py --scope rates
+# Todo, con tipo explícito
+.venv\Scripts\python pipeline.py --scope all
+# Precios, solo nombre y precio
+.venv\Scripts\python pipeline.py --format prices --fields name,price
+# Agrupar los artículos por categoría
+.venv\Scripts\python pipeline.py --format categories
 ```
 
-Selenium requiere Chrome; Selenium Manager resuelve el controlador y puede necesitar conexión en la primera ejecución. El código cierra el navegador incluso si hay un error.
+## Selectores y Selenium
 
-La CLI permite hasta 50 páginas, detecta ciclos, conserva la primera aparición de cada código y registra las exclusiones. La paginación se limita al origen inicial; con archivos locales, a la carpeta inicial. Las peticiones HTML tienen timeout y límite de 2 MB. Para fuentes HTTP, una lectura fallida o una prohibición en `robots.txt` detiene la ejecución. No incluye evasión de bloqueos ni consultas de identidad.
+`schema.json` configura la carta; `catalog-schema.json` configura el catálogo sintético. Los selectores de campos son relativos a cada entrada.
 
-## Validación y límites
+```powershell
+# La misma carta con Chrome headless y espera explícita
+.venv\Scripts\python pipeline.py --browser
 
-Nombre y código son obligatorios. El precio admite punto decimal y coma de miles (`$1,234.50`); el stock admite enteros no negativos. Si necesitas precios con coma decimal, modifica `price_number` y `parsePrice` antes de usar esa fuente. CSV conserva Unicode, cita comas/comillas y neutraliza prefijos de fórmula.
+# Catálogo adicional: 3 páginas, 10 registros, 1 duplicado y 1 incompleto
+.venv\Scripts\python pipeline.py --source "file:///C:/ruta/web-scraping-selenium-pipeline/fixtures/catalog-1.html" --schema catalog-schema.json
 
-Las pruebas cubren la fuente local y la lógica de extracción. La integración de un sitio externo necesita un esquema específico y su propia verificación; no se ha validado un servicio de producción. Los cambios de estructura del sitio pueden requerir nuevos selectores. No hay programación de tareas, autenticación ni persistencia histórica.
+# Copia local propia (URI absoluta)
+.venv\Scripts\python pipeline.py --source "file:///C:/datos/carta.html" --schema schema.json
+```
+
+Para el catálogo adicional, sustituye la URI de ejemplo por una URI `file:///` absoluta a tu copia. Selenium requiere Chrome y Selenium Manager puede necesitar conexión para resolver el controlador. El navegador se cierra también ante errores.
+
+Una fuente HTTP requiere `--allow-network`, un esquema adaptado y un `robots.txt` legible. La CLI limita páginas y tamaño, rechaza ciclos y paginación fuera del origen o de la carpeta inicial. Los precios usan punto decimal; CSV conserva Unicode y neutraliza prefijos de fórmula. El HTML pegado se analiza sin ejecutar scripts. La demo estática usa el navegador; Python y Selenium se ejecutan desde la consola.
+
+## Verificar
 
 ```powershell
 .venv\Scripts\python -m unittest discover -s tests -v
-```
-
-Para las pruebas de navegador y regenerar las capturas (Node.js 20 o posterior):
-
-```powershell
 npm install
 npx playwright install chromium
-# Mantén el servidor del puerto 5083 activo en otra terminal
+# Con el servidor del puerto 5083 activo:
 npm test
 ```
 
-Se verificaron el motor HTML, el modo Selenium sobre la misma fuente y el flujo web completo. El informe de revisión está en [docs/verification.md](docs/verification.md).
+Las pruebas verifican la carta, el catálogo adicional, exportaciones, selectores, HTML formateado y vista móvil. Ver [revisión](docs/verification.md).
 
-## Un repositorio, un proyecto
-
-```text
-index.html / app.css / app.js   Mesa web estática
-pipeline.py / schema.json      Motor Python y configuración
-fixtures/                      Catálogo reproducible de 3 páginas
-tests/                         Pruebas del motor y navegador
-assets/screenshots/            Capturas reales de escritorio, móvil y Upwork
-docs/                          Diseño, revisión y cambios frente al código anterior
-```
-
-Se reemplazaron los scripts antiguos de DNI y sus rutas personales por una herramienta de extracción de catálogos. Las consultas de identidad pertenecen al proyecto independiente de validación de DNI.
-
-Desarrollado por [Eliud Rojas Mendoza](https://github.com/Enybyy). Licencia MIT.
+Desarrollado por [Eliud Rojas Mendoza · Enybyy](https://github.com/Enybyy). Licencia MIT para el código del proyecto. La carta adaptada se incluye como ejemplo de datos aportados para la demo.

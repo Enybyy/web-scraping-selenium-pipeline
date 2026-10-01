@@ -1,0 +1,14 @@
+{
+  "original_entries": 208,
+  "unique_entries": 164,
+  "responsive_duplicates_removed": 44,
+  "all_prices_match": true,
+  "all_descriptions_match_except_brand_generalization": true,
+  "all_categories_match_except_brand_and_tariff_labels": true,
+  "types": {
+    "Tarifa buffet": 2,
+    "Adicional": 2,
+    "Bebida": 160
+  },
+  "source": "User-provided saved restaurant HTML; no live request"
+}

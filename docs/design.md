@@ -18,5 +18,12 @@ Título            fuente → selección → datos
 └───────────────┴──────────────────────┘
 ```
 
-Principio rector: ver la página antes de convertirla en datos. La fuente tiene su propia identidad de tienda ficticia y la mesa de extracción la enmarca. La tipografía, los selectores y la relación entre original y tabla comunican extracción, sin métricas inventadas ni gráficos decorativos.
-Los valores de ejemplo son sintéticos y están identificados como tales. Las cifras de cada ejecución se calculan a partir de los documentos extraídos.
+Principio rector: ver la página antes de convertirla en datos. La fuente principal tiene identidad de carta de restaurante y la mesa de extracción la enmarca. La tipografía, los selectores y la relación entre original y tabla comunican extracción, sin métricas inventadas ni gráficos decorativos.
+La carta contiene datos de una copia real anonimizada; el catálogo secundario es sintético. El nombre Enybyy Extract liga la herramienta a la cuenta de su autor. Las cifras de cada ejecución se calculan a partir de los documentos extraídos.
+
+
+## Carta y selección de salida
+
+La carta utiliza ciruela `#793b50`, tinta `#252525`, blanco y divisores `#eadde1`. Georgia en títulos; Segoe UI en listados. Navegación por familias, tarifas en un bloque propio y precios alineados. El plato dibujado en CSS es el único gesto visual; no requiere imágenes externas.
+
+La configuración presenta alcance, formato y columnas antes de los selectores técnicos. La tabla usa encabezados según el esquema, tipos visibles, precios numéricos alineados y texto de descripción con saltos. La moneda y los controles de stock cambian con la fuente. La selección visible coincide con la exportación.

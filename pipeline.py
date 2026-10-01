@@ -41,10 +41,13 @@ def extract(html: str, source: str, schema: dict = DEFAULT_SCHEMA):
             if not values.get('sku') or not values.get('name'):
                 raise ValueError('sku or name is missing')
             values['price'] = price_number(values.get('price', ''))
-            stock = values.get('stock', '')
-            if not re.fullmatch(r'\d+', stock):
-                raise ValueError('stock must be a non-negative integer')
-            values['stock'] = int(stock)
+            if 'record_type' in schema['fields'] and values.get('record_type') not in ('Tarifa buffet', 'Adicional', 'Bebida'):
+                raise ValueError('record_type must identify a tariff, add-on or drink')
+            if 'stock' in schema['fields']:
+                stock = values.get('stock', '')
+                if not re.fullmatch(r'\d+', stock):
+                    raise ValueError('stock must be a non-negative integer')
+                values['stock'] = int(stock)
             values['source'] = source
             rows.append(values)
         except ValueError as exc:
@@ -136,6 +139,39 @@ def crawl(start: str, schema: dict = DEFAULT_SCHEMA, max_pages: int = 3,
             driver.quit()
 
 
+def select_output(result: dict, scope: str = 'items', goal: str = 'detail', fields=None):
+    """Validate the entire source first, then select and project the requested output."""
+    if scope not in ('items', 'rates', 'all') or goal not in ('detail', 'prices', 'categories'):
+        raise ValueError('Invalid extraction scope or format')
+    menu = any('record_type' in row for row in result['rows'])
+    if scope == 'rates' and not menu:
+        raise ValueError('The catalog has no buffet tariffs')
+    rows = [row for row in result['rows'] if not menu or scope == 'all' or
+            (scope == 'rates') == (row.get('record_type') == 'Tarifa buffet')]
+    if goal == 'categories':
+        groups = {}
+        for row in rows:
+            category = row.get('category') or 'Sin categoría'
+            group = groups.setdefault(category, {'category': category, 'item_count': 0,
+                'min_price': row['price'], 'max_price': row['price'], 'source': []})
+            group['item_count'] += 1
+            group['min_price'] = min(group['min_price'], row['price'])
+            group['max_price'] = max(group['max_price'], row['price'])
+            if row['source'] not in group['source']:
+                group['source'].append(row['source'])
+        rows = [{**group, 'source': ' · '.join(group['source'])} for group in groups.values()]
+    columns = list(rows[0]) if rows else []
+    if goal == 'prices':
+        columns = [key for key in ('name', 'record_type', 'category', 'price') if key in columns]
+    if fields is not None:
+        if not fields or any(key not in columns for key in fields):
+            raise ValueError('Select valid output fields for this format')
+        columns = list(dict.fromkeys(fields))
+    return {**result, 'rows': [{key: row[key] for key in columns} for row in rows],
+            'validatedRecords': len(result['rows']), 'columns': columns,
+            'selection': {'scope': scope, 'format': goal, 'fields': columns}}
+
+
 def csv_safe(value):
     text = str(value)
     return "'" + text if text.lstrip().startswith(('=', '+', '-', '@')) else value
@@ -144,7 +180,7 @@ def csv_safe(value):
 def save(result: dict, output: Path):
     output.mkdir(parents=True, exist_ok=True)
     (output / 'report.json').write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding='utf-8')
-    columns = ['sku', 'name', 'category', 'price', 'stock', 'source']
+    columns = result.get('columns') or (list(result['rows'][0]) if result['rows'] else ['sku', 'name', 'category', 'price', 'description', 'source'])
     with (output / 'catalog.csv').open('w', encoding='utf-8-sig', newline='') as file:
         writer = csv.DictWriter(file, fieldnames=columns, extrasaction='ignore')
         writer.writeheader()
@@ -153,17 +189,22 @@ def save(result: dict, output: Path):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--source', default=(ROOT / 'fixtures/catalog-1.html').as_uri())
+    parser.add_argument('--source', default=(ROOT / 'fixtures/menu.html').as_uri())
     parser.add_argument('--schema', type=Path, default=ROOT / 'schema.json')
     parser.add_argument('--output', type=Path, default=ROOT / 'output')
     parser.add_argument('--max-pages', type=int, default=3)
     parser.add_argument('--browser', action='store_true')
     parser.add_argument('--allow-network', action='store_true')
     parser.add_argument('--delay', type=float, default=1)
+    parser.add_argument('--scope', choices=['items', 'rates', 'all'], default='items')
+    parser.add_argument('--format', choices=['detail', 'prices', 'categories'], default='detail')
+    parser.add_argument('--fields', help='Comma-separated output columns for the chosen format')
     args = parser.parse_args()
     try:
         schema = json.loads(args.schema.read_text(encoding='utf-8'))
         result = crawl(args.source, schema, args.max_pages, args.browser, args.allow_network, args.delay)
+        result = select_output(result, args.scope, args.format,
+                               [field.strip() for field in args.fields.split(',')] if args.fields is not None else None)
         save(result, args.output)
     except Exception as exc:
         print(f'Extraction failed: {exc}', file=sys.stderr)

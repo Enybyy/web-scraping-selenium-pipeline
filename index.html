@@ -3,37 +3,37 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="description" content="Mesa de extracción de catálogos HTML: selectores, paginación, validación y exportación reales.">
-  <title>Extracta · Mesa de extracción web</title>
+  <title>Enybyy Extract · Mesa de extracción web</title>
   <link rel="stylesheet" href="app.css"><script src="app.js" defer></script>
 </head>
 <body>
-<header class="top"><a class="wordmark" href="./"><span class="mark" aria-hidden="true">⌗</span>extracta<span class="edition">Mesa de extracción web</span></a><nav aria-label="Proyecto"><a href="https://github.com/Enybyy/web-scraping-selenium-pipeline#instalar-y-ejecutar">Instalar Python</a><a href="https://github.com/Enybyy/web-scraping-selenium-pipeline">Código en GitHub <span aria-hidden="true">↗</span></a></nav></header>
+<header class="top"><a class="wordmark" href="./"><span class="mark" aria-hidden="true">⌗</span>Enybyy Extract<span class="edition">Mesa de extracción web</span></a><nav aria-label="Proyecto"><a href="https://github.com/Enybyy/web-scraping-selenium-pipeline#ejecutar">Instalar Python</a><a href="https://github.com/Enybyy/web-scraping-selenium-pipeline">Código en GitHub <span aria-hidden="true">↗</span></a></nav></header>
 <main>
 <section class="intro"><div><h1>Una página. Datos que puedes usar.</h1><p>Elige qué extraer, revisa la fuente y llévalo a tu hoja de cálculo.</p></div><div class="flow" aria-label="Flujo de extracción"><span>HTML</span><i aria-hidden="true">→</i><span>Selectores</span><i aria-hidden="true">→</i><span>CSV / JSON</span></div></section>
 <div class="workspace">
 <aside class="config">
   <div class="config-heading"><h2>Tu extracción</h2><span class="local">Demo local</span></div>
-  <label for="sourceMode">Fuente de datos</label><select id="sourceMode"><option value="fixture">Catálogo Atelier · 3 páginas</option><option value="paste">Pegar mi propio HTML</option></select>
-  <p class="hint">Extraemos documentos HTML reales. Atelier es una tienda ficticia con datos de prueba.</p>
+  <label for="sourceMode">Fuente de datos</label><select id="sourceMode"><option value="menu">Carta de restaurante · fuente real</option><option value="fixture">Catálogo Atelier · 3 páginas</option><option value="paste">Pegar mi propio HTML</option></select>
+  <p class="hint" id="sourceHint">Carta real simplificada, sin marcas. Conserva los precios en soles; no publica stock. El catálogo adicional contiene datos sintéticos.</p>
   <div id="pasteBox" hidden><label for="customHtml">Documento HTML</label><textarea id="customHtml" rows="5" placeholder="Pega artículos con .product, .sku, h2, .price…"></textarea><p class="hint">Se analiza como texto; sus scripts no se ejecutan.</p></div>
-  <details open><summary>Selectores CSS <span>Editar</span></summary><div id="selectors">
-    <label for="item">Contenedor de cada producto</label><input id="item" value=".product" spellcheck="false">
-    <div class="selector-row"><label for="name">Nombre</label><input id="name" value="h2" spellcheck="false"></div>
-    <div class="selector-row"><label for="sku">Código</label><input id="sku" value=".sku" spellcheck="false"></div>
-    <div class="selector-row"><label for="category">Categoría</label><input id="category" value=".category" spellcheck="false"></div>
-    <div class="selector-row"><label for="price">Precio</label><input id="price" value=".price" spellcheck="false"></div>
-    <div class="selector-row"><label for="stock">Stock</label><input id="stock" value=".stock" spellcheck="false"></div>
-  </div></details>
-  <div class="options"><label for="pages">Páginas</label><select id="pages"><option value="3">Todas (hasta 3)</option><option value="1">Solo la primera</option><option value="2">Hasta 2 páginas</option></select></div>
+  <label for="scope">¿Qué quieres extraer?</label>
+  <select id="scope"><option value="items">Artículos de la carta</option><option value="rates">Tarifas del buffet</option><option value="all">Todo, separado por tipo</option></select>
+  <label for="goal">Formato del resultado</label>
+  <select id="goal"><option value="detail">Detalle completo</option><option value="prices">Lista de precios</option><option value="categories">Resumen por categoría</option></select>
+  <p class="hint" id="selectionNote">Las tarifas de ingreso no se mezclan con los artículos. La selección se aplica a la tabla y a las descargas.</p>
+  <details open class="field-options"><summary>Columnas de salida</summary><div id="fieldChoices"></div></details>
+  <label for="priority">Ordenar por</label><select id="priority"><option value="source">Orden de la fuente</option><option value="name">Nombre A–Z</option><option value="price">Menor precio</option><option value="category">Categoría A–Z</option></select>
+  <details class="selector-options"><summary>Selectores CSS <span>Editar</span></summary><div id="selectors"></div></details>
+  <div class="options"><label for="pages">Páginas</label><select id="pages" disabled><option value="1" selected>Una página</option><option value="3">Todas (hasta 3)</option><option value="2">Hasta 2 páginas</option></select></div>
   <button id="run" class="primary" type="button"><span aria-hidden="true">▷</span> Extraer datos</button>
   <button id="reset" class="quiet" type="button">Restablecer selectores</button>
   <div class="trace"><h3>Registro de ejecución</h3><ol id="logs" aria-live="polite"><li>Fuente lista. Inicia una extracción.</li></ol></div>
 </aside>
 <div class="desk">
-  <section class="source-panel"><div class="panel-heading"><div><h2>Página fuente</h2><p id="sourcePath">fixtures/catalog-1.html</p></div><div class="switch" aria-label="Vista de fuente"><button id="visual" type="button" aria-pressed="true">Visual</button><button id="html" type="button" aria-pressed="false">HTML</button></div></div><iframe id="sourceFrame" src="fixtures/catalog-1.html" title="Catálogo local Atelier" sandbox="allow-same-origin"></iframe><pre id="sourceHtml" hidden tabindex="0"></pre><div class="source-caption"><span class="dot" aria-hidden="true"></span><span id="sourceNote">Fuente inspeccionable · sin API ni créditos</span><a href="fixtures/catalog-1.html" target="_blank" rel="noopener">Abrir fuente ↗</a></div></section>
-  <section class="results"><div class="result-heading"><div><h2>Datos extraídos <span id="count">0</span></h2><p id="summary" role="status">Los resultados aparecerán al ejecutar la extracción.</p></div><div class="downloads"><button id="csv" type="button" disabled>Descargar CSV</button><button id="json" type="button" disabled>JSON</button></div></div>
-    <div class="filters"><label class="search"><span aria-hidden="true">⌕</span><input id="filter" aria-label="Buscar registros extraídos" placeholder="Buscar nombre, categoría o código" disabled></label><label class="stock-filter"><input id="available" type="checkbox" disabled>Solo con stock</label><span id="visibleCount"></span></div>
-    <div class="table-wrap"><table><thead><tr><th scope="col">Código</th><th scope="col">Producto</th><th scope="col">Categoría</th><th scope="col">Precio USD</th><th scope="col">Stock</th><th scope="col">Fuente</th></tr></thead><tbody id="rows"><tr><td colspan="6" class="empty"><span aria-hidden="true">⌗</span><strong>De HTML a una tabla limpia.</strong><p>Ejecuta el catálogo o pega tu propio documento.</p></td></tr></tbody></table></div>
+  <section class="source-panel"><div class="panel-heading"><div><h2>Página fuente</h2><p id="sourcePath">fixtures/menu.html</p></div><div class="switch" aria-label="Vista de fuente"><button id="visual" type="button" aria-pressed="true">Visual</button><button id="html" type="button" aria-pressed="false">HTML</button></div></div><iframe id="sourceFrame" src="fixtures/menu.html" title="Carta de restaurante sin marcas" sandbox="allow-same-origin"></iframe><pre id="sourceHtml" hidden tabindex="0"></pre><div class="source-caption"><span class="dot" aria-hidden="true"></span><span id="sourceNote">Copia de una fuente real · marcas generalizadas</span><a href="fixtures/menu.html" target="_blank" rel="noopener">Abrir fuente ↗</a></div></section>
+  <section class="results"><div class="result-heading"><div><h2>Datos extraídos <span id="count">0</span></h2><p class="table-note" id="tableNote">Referencias CARTA añadidas localmente; no son códigos comerciales. Precios en soles.</p><p id="summary" role="status">Los resultados aparecerán al ejecutar la extracción.</p></div><div class="downloads"><button id="csv" type="button" disabled>Descargar CSV</button><button id="json" type="button" disabled>JSON</button></div></div>
+    <div class="filters"><label class="search"><span aria-hidden="true">⌕</span><input id="filter" aria-label="Buscar registros extraídos" placeholder="Buscar nombre, categoría o código" disabled></label><label class="stock-filter" id="stockFilter" hidden><input id="available" type="checkbox" disabled>Solo con stock</label><span id="visibleCount"></span></div>
+    <div class="table-wrap" tabindex="0" aria-label="Resultados con desplazamiento horizontal"><table><thead id="tableHead"><tr><th scope="col">Referencia local</th><th scope="col">Nombre</th><th scope="col">Tipo de entrada</th><th scope="col">Categoría</th><th scope="col">Precio (S/)</th><th scope="col">Descripción</th><th scope="col">Documento fuente</th></tr></thead><tbody id="rows"><tr><td colspan="7" class="empty"><span aria-hidden="true">⌗</span><strong>De HTML a una tabla limpia.</strong><p>Ejecuta el catálogo o pega tu propio documento.</p></td></tr></tbody></table></div>
     <details id="issues" hidden><summary id="issuesSummary">Registros excluidos</summary><ul id="issueList"></ul></details>
   </section>
 </div>

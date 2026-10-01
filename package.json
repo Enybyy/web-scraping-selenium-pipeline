@@ -1,8 +1,8 @@
 {
-  "name": "extracta-catalog-workbench",
+  "name": "enybyy-extract",
   "version": "1.0.0",
   "private": true,
-  "description": "Browser checks and real screenshots for the Extracta catalog workbench",
+  "description": "Browser checks and real screenshots for the Enybyy Extract workbench",
   "scripts": {"test": "node tests/browser.cjs"},
   "devDependencies": {"playwright": "1.62.1"}
 }

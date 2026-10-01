@@ -1,23 +1,19 @@
-# Revisión de Extracta
+# Verificación de Enybyy Extract
 
-Revisión realizada el 1 de octubre de 2026.
+Revisión: 1 de octubre de 2026.
 
-## Evidencia funcional
+## Corrección semántica
 
-- `python pipeline.py`: 3 páginas HTML, 10 registros únicos, 1 duplicado, 1 precio incompleto; archivos CSV y JSON generados.
-- `python pipeline.py --browser`: el mismo resultado con Chrome headless y Selenium.
-- 9 pruebas Python: paginación, límite, validación, formato de precio, stock cero, opt-in de red, confinamiento de archivos y CSV con Unicode/comillas/fórmulas.
-- Prueba Playwright: extracción de tres páginas, filtro de stock y texto, CSV descargado con los registros visibles, selector inválido, límite de páginas, HTML pegado, texto que contiene etiquetas sin ejecución, protección de fórmulas CSV y móvil sin desbordamiento de página.
-- Capturas producidas por el navegador, sin reconstruir la interfaz en una herramienta de imágenes: escritorio, móvil y formato 4:3.
+Adultos y Niños son tarifas de ingreso al buffet. Se corrigió la clasificación y se separó su extracción de los artículos de la carta. La tabla identifica nombre, tipo de entrada, categoría, precio, descripción y referencia local; no llama producto a una tarifa.
 
-## Cambios frente al legado
+Se cotejaron las 164 entradas únicas con el archivo original aportado por el usuario: todos los precios, descripciones y categorías coinciden, salvo la generalización documentada de marcas y el cambio del rótulo Precios a Tarifas buffet. Se verificó cada tipo según la sección original. Resultado: 2 tarifas, 2 adicionales y 160 bebidas. Ver [informe de origen](source-audit.json).
 
-El repositorio original contenía scripts de consulta de DNI con rutas absolutas de otro equipo, pausas fijas y listas separadas de nombres/códigos que podían quedar desalineadas al fallar una consulta. La comparación no reconciliaba con claridad por identificador. Otro script modificaba un formulario en BeautifulSoup sin enviarlo.
+## Pruebas ejecutadas
 
-La página de presentación no realizaba extracción: mostraba 2.450 consultas, 99,8% y otras cifras estáticas sin evidencia. La descarga de CSV no estaba conectada a una acción.
+- Python: 12 pruebas aprobadas. Cubren ambos esquemas, clasificación, los tres formatos de salida, columnas seleccionadas, rechazo de tipos incorrectos, CSV, validación de precios/stock y paginación.
+- Comparación completa navegador/Python: coinciden todos los campos de las 164 entradas de la carta y de los 10 productos del catálogo, normalizando únicamente la URI de procedencia.
+- Selenium con Chrome: carta completa, 1 página y 164 entradas válidas; catálogo, 3 páginas y 10 productos válidos, 1 duplicado y 1 registro sin precio excluido.
+- Playwright: tarifas separadas, alcance de artículos/todo/tarifas, categorías con suma correcta, lista de precios, orden numérico, columnas desmarcadas ausentes también en JSON, descarga desactivada sin columnas, CSV filtrado, cambio de fuente y vuelta a carta, selectores inválidos, límite de páginas, HTML propio, texto seguro y protección de fórmulas.
+- Capturas renovadas. Revisadas visualmente escritorio, móvil, carta independiente y catálogo. Verificación de ausencia de desbordamiento de la página en móvil; la tabla y navegación de la carta tienen desplazamiento propio.
 
-La reconstrucción cambia el alcance a catálogos. Cada registro contiene código, nombre, categoría, precio, stock y procedencia. Los errores se reportan; la duplicación usa el código como clave. El modo web analiza HTML local real; el motor Python comparte el mismo catálogo y validación. Las imágenes antiguas y la carpeta `VERIFICAR_DNI` se retiran porque pertenecían a la presentación anterior.
-
-## Lo no verificado
-
-No se ejecutaron extracciones de portales de terceros. Los ejemplos de URL son instrucciones de uso y requieren un esquema adaptado, autorización de la fuente y su propia prueba. No se afirma rendimiento comercial ni disponibilidad de un proveedor externo. La publicación de GitHub Pages debe comprobarse después del push; una captura local no certifica la publicación remota.
+La extracción de origen usa una copia local; no se consulta la página original en vivo ni se afirma vigencia de sus precios. La clasificación y las referencias CARTA se añadieron en la copia. Atelier sigue siendo un catálogo sintético. La extracción valida todos los campos del esquema antes de elegir alcance y columnas de salida.
