@@ -21,6 +21,16 @@ From an HTML page to a working table: extract a restaurant menu, select fields a
 
 ## About the project
 
+### Reddit discussion archive sample
+
+[Open the readable HTML archive](https://enybyy.github.io/web-scraping-selenium-pipeline/examples/reddit/archive.html) · [Download HTML](examples/reddit/archive.html) · [CSV](examples/reddit/comments.csv)
+
+A real public-thread snapshot with 10 top-level comments, 6 captured replies, author names, UTC dates, net scores and three embedded images/GIFs. Search works locally and the HTML opens offline. This is a limited sample, not a complete Reddit export or a private-group scraper.
+
+![Reddit archive sample](examples/reddit/preview.png)
+
+The source was read from the loaded Reddit DOM after human verification, with automatic translation disabled. The reusable DOM capture and Python HTML/CSV/media processing are in [examples/reddit](examples/reddit/README.md).
+
 A menu or catalog can be easy to read on screen and difficult to reuse as a table. Enybyy Extract keeps the source page visible while extracting its entries and lets users choose which fields reach the working file.
 
 The same extraction can become item details, a price list or a category summary. Filters, columns and sorting carry into CSV and JSON, so the output corresponds to the reviewed selection. The demo uses saved sources; the Python version adds command-line execution and optional Selenium browser processing.
